@@ -1,28 +1,35 @@
 <html>
 
 <head>
-	<title>
+	<title >
 		Messenger
-	</title>
+    </title>
+    <style>
+        #chat{
+            height:500px;
+            }
+    </style>
 </head>
 
 <body>
-    <h1>my page</h1>
+    <h1 align="center">my page</h1>
     <div id="chat"></div>
     <form id="send-message">
-    	<input id="message" placeholder="Enter Message"></input>
+        
+    	<input  size="35" id="message" placeholder="Enter Message"></input>
     	<input type="submit"></input>
     </form>
 
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    
 
     <script>
-
+        
         var socket = io.connect();
-        var messageFrom = $('send-message');
-        var messageBox = $('message');
-        var chat = $('chat');
+        var messageFrom = $('$send-message');
+        var messageBox = $('$message');
+        var chat = $('$chat');
 
         messageFrom.submit(function(e){
             e.preventDefault();
