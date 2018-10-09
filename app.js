@@ -1,13 +1,19 @@
 
-var express = require('express'), 
-	io = require('socket.io'),
-	app = express();
+var express=require('express');
 
-var port = 3000;
-app.listen(port,function(){
-    console.log("Listening server at port " + port);
+
+var app=express();
+var server=require('http').createServer(app);
+
+
+var port=3000;
+
+server.listen(port,function(){
+    console.log("server"+port);
     
 });
+
+var io=require('socket.io').listen(server);
 
 app.get("/",function(req,res){
     res.sendfile("index.html");
@@ -20,6 +26,10 @@ io.sockets.on('connection',function(socket){
     });
 
 });
+
+
+
+
 
 
 
