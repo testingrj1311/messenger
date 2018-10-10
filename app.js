@@ -1,30 +1,30 @@
 
-var express=require('express');
+var express = require('express'), 
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
+
+var port = 3000;
 
 
-var app=express();
-var server=require('http').createServer(app);
-
-
-var port=3000;
-
-server.listen(port,function(){
-    console.log("server"+port);
-    
-});
-
-var io=require('socket.io').listen(server);
-
-app.get("/",function(req,res){
-    res.sendfile("index.html");
-});
-
-io.sockets.on('connection',function(socket){
+io.on('connection',function(socket){
+    console.log("Socket created :" + socket.id)
     socket.on('send message',function(data){
-        io.sockets.emit('new message',data);
+        socket.broadcast.emit('new message',data);
         
     });
 
+});
+
+app.get("/",function(req,res){
+    console.log("entered app.get");
+    res.sendfile("index.html");
+});
+
+
+server.listen(port,function(){
+    console.log("Listening server at port " + port);
+    
 });
 
 
