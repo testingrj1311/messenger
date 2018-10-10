@@ -5,41 +5,42 @@
 		Messenger
     </title>
     <style>
-        #chat{
-            height:500px;
-            }
+        #chat{ 
+            height: 200px; 
+            border: 2px black;
+        } 
     </style>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="socket.io/socket.io.js"></script>
 </head>
 
 <body>
-    <h1 align="center">my page</h1>
+    <h1 align="center">Chat Messenger</h1>
     <div id="chat"></div>
     <form id="send-message">
-        
-    	<input  size="35" id="message" placeholder="Enter Message"></input>
-    	<input type="submit"></input>
+        <input size="35" id="message" placeholder="Enter Message"></input>
+        <input type="submit" id="submit"></input>
     </form>
 
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
-    
-
     <script>
-        
-        var socket = io.connect();
-        var messageFrom = $('$send-message');
-        var messageBox = $('$message');
-        var chat = $('$chat');
+        $(function () {
+            var sockets = io();
+            var messageFrom = $('#send-message');
+            var messageBox = $('#message');
+            var chat = $('#chat');
+            var submit = $('#submit');
 
-        messageFrom.submit(function(e){
-            e.preventDefault();
-            socket.emit('send message', messageBox.val());
-            messageBox.val('');
-        });
+            submit.click(function (e) {
+                e.preventDefault();
+                sockets.emit('send message', messageBox.val());
+                messageBox.val('');
+            });
 
-        socket.on('new messsage', function(data){
-            chat.append(data + "<br/>");
-        });
+            sockets.on('new messsage', function (data) {
+                chat.append(data + "<br/>");
+            });
+        })
+
     </script>
 </body>
 
