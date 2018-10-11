@@ -5,41 +5,82 @@
 		Messenger
     </title>
     <style>
-        #chat{ 
-            height: 200px; 
-            border: 2px black;
-        } 
+        #chat{
+            height:500px;
+            }
     </style>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="socket.io/socket.io.js"></script>
 </head>
 
 <body>
-    <h1 align="center">Chat Messenger</h1>
+    <h1 align="center">my page</h1>
     <div id="chat"></div>
-    <form id="send-message">
-        <input size="35" id="message" placeholder="Enter Message"></input>
-        <input type="submit" id="submit"></input>
-    </form>
+        <div id="send-message">
+            <div id="output"></div>
+        </div>   
+        <input  size="35" id="handle" placeholder="Handle"></input>
+    	<input  size="35" id="message" placeholder="Enter Message"></input>
+    	<button id="submit">Send</button>
+    </div>
 
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+     
+     
+
+    <!--<script>
+         jQuery(function($){
+            console.log("i m in");
+            var socket = io.connect();
+            var $messageForm = $('#send-message');
+            var $messageBox = $('#message');
+            var $chat = $('#chat');
+
+            
+
+            $messageForm.submit(function(e){
+                console.log("enteres");
+                e.preventDefault();    //prevents to refresh the page after submit button is clicked.it just send the msg to server
+                console.log("submited");
+                socket.emit('send message', $messageBox.val());
+                $messageBox.val('');
+            });
+
+            socket.on('new messsage', function(data){
+            $chat.append(data + "<br/>");
+            });
+
+        });
+       
+
+        
+    </script>-->
     <script>
-        $(function () {
-            var sockets = io();
-            var messageFrom = $('#send-message');
-            var messageBox = $('#message');
-            var chat = $('#chat');
-            var submit = $('#submit');
+        
+    var socket = io.connect();
+    
+    var message=document.getElementById("message");
+    var btn=document.getElementById("submit");
+    var output=document.getElementById("output");
+    var handle=document.getElementById("handle");
+   
 
-            submit.click(function (e) {
-                e.preventDefault();
-                sockets.emit('send message', messageBox.val());
-                messageBox.val('');
-            });
+    
+    //functionality of btn
+    btn.onclick=function(){
 
-            sockets.on('new messsage', function (data) {
-                chat.append(data + "<br/>");
-            });
-        })
+        socket.emit('chat',{
+        message:message.value,
+        handle:handle.value
+        
+    });
+};
+  
+
+    //to output data on screen
+    socket.on('chat',function(data){
+        output.innerHTML+='<p><strong>'+data.handle+':</strong>'+data.message+'</p>';
+    });
 
     </script>
 </body>
