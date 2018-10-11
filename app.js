@@ -1,35 +1,34 @@
-
-var express = require('express'), 
-    app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server);
-
-var port = 3000;
+var express=require('express');
 
 
-io.on('connection',function(socket){
-    console.log("Socket created :" + socket.id)
-    socket.on('send message',function(data){
-        socket.broadcast.emit('new message',data);
+var app=express();
+var server=require('http').createServer(app);
+
+
+var port=3000;
+
+server.listen(port,function(){
+    console.log("server"+port);
+    
+});
+
+var io=require('socket.io').listen(server);
+
+app.get("/",function(req,res){
+    res.sendFile(__dirname + '/index.html');
+});
+
+//to recieve events on server side
+io.sockets.on("connection",function(socket){   //use to make connection with socket
+   // console.log("socket connected");
+
+    socket.on("chat",function(data){
+        
+        io.sockets.emit('chat',data);
         
     });
 
 });
-
-app.get("/",function(req,res){
-    console.log("entered app.get");
-    res.sendfile("index.html");
-});
-
-
-server.listen(port,function(){
-    console.log("Listening server at port " + port);
-    
-});
-
-
-
-
 
 
 
