@@ -1,86 +1,142 @@
 <html>
 
 <head>
-	<title >
-		Messenger
+    <title>
+        Messenger
     </title>
+
     <style>
-        #chat{
-            height:500px;
-            }
+        .heading {
+            font-family: 'Comic Sans MS';
+            font-style: italic;
+            text-shadow: 1px 2px 2px;
+            text-align: center;
+        }
+
+        .chatbox {
+            background-color: rgb(248, 248, 247);
+            height: 400px;
+            margin: 10px;
+        }
+
+        .handle_box {
+            height: 40px;
+            background-color: white;
+            padding: 5px;
+        }
+
+        .name {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-family: 'Times New Roman';
+        }
+
+        .chat_box {
+            padding-left: 15px;
+            padding-top: 5px;
+            padding-right: 15px;
+            padding-bottom: 10px;
+        }
+
+        #output > * {
+            padding:2px;
+            margin: 0px;
+            width: 50%;
+        }
+        
+        .col-3, .col-6 {
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+        #message, #handle, #submit {
+            width: 100%;
+        }
     </style>
+
+    <!-- <link rel="stylesheet" type="text/css" href="css/layout.css"> -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+
+
 </head>
 
 <body>
-    <h1 align="center">my page</h1>
-    <div id="chat"></div>
-        <div id="send-message">
-            <div id="output"></div>
-        </div>   
-        <input  size="35" id="handle" placeholder="Handle"></input>
-    	<input  size="35" id="message" placeholder="Enter Message"></input>
-    	<button id="submit">Send</button>
+    <div class="jumbotron" style=" background-color: rgb(9, 206, 224); height: 100px; background-size: auto; padding-top: 20px; margin-bottom: 0px;">
+        <h1 class="heading">Chat Messenger</h1>
     </div>
 
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-  
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
-     
-     
 
-    <!--<script>
-         jQuery(function($){
-            console.log("i m in");
-            var socket = io.connect();
-            var $messageForm = $('#send-message');
-            var $messageBox = $('#message');
-            var $chat = $('#chat');
+    <div id="send-message" class="chatbox">
+        <div class="container-fluid">
+            <div class="row handle_box border border-bottom-0">
+                <!-- Handle -->
+                <div class="col-12 name">Handle</div>
+            </div>
 
-            
+            <div class="row chat_box">
+                <div id="col-12 output">
 
-            $messageForm.submit(function(e){
-                console.log("enteres");
-                e.preventDefault();    //prevents to refresh the page after submit button is clicked.it just send the msg to server
-                console.log("submited");
-                socket.emit('send message', $messageBox.val());
-                $messageBox.val('');
-            });
+                </div>
+            </div>
+        </div>
+    </div>
 
-            socket.on('new messsage', function(data){
-            $chat.append(data + "<br/>");
-            });
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-9">
+                <div class="form-row">
+                    <div class="col-3">
+                        <input id="handle" class="form-control" placeholder="Handle">
+                    </div>
+                    <div class="col-9">
+                        <input id="message" class="form-control" type="text" placeholder="Type Message here...">
+                    </div>
+                   
+                </div>
 
-        });
-       
+            </div>
+            <div class="col-3">
+                <button class="btn btn-info" id="submit">SEND</button>
+            </div>
+        </div>
+    </div>
 
-        
-    </script>-->
     <script>
-        
-    var socket = io.connect();
-    
-    var message=document.getElementById("message");
-    var btn=document.getElementById("submit");
-    var output=document.getElementById("output");
-    var handle=document.getElementById("handle");
-   
+        var sockets = io.connect();
 
-    
-    //functionality of btn
-    btn.onclick=function(){
+        var handle = document.getElementById('handle');
+        var message = document.getElementById('message');
+        var output = document.getElementById('output');
+        var btn = document.getElementById('submit');
 
-        socket.emit('chat',{
-        message:message.value,
-        handle:handle.value
-        
-    });
-};
-  
+        btn.onclick = function () {
+            sockets.emit('chat', {
+                message: message.value,
+                handle: handle.value
+            });
 
-    //to output data on screen
-    socket.on('chat',function(data){
-        output.innerHTML+='<p><strong>'+data.handle+':</strong>'+data.message+'</p>';
-    });
+        }
+
+        sockets.on('chat', function (data) {
+            if (data.handle[0] == data.handle[0].toLowerCase()) {
+                data.handle = data.handle[0].toUpperCase() + data.handle.slice(1);
+            }
+            if (data.message[0] == data.message[0].toLowerCase()) {
+                data.message = data.message[0].toUpperCase() + data.message.slice(1);
+            }
+            output.innerHTML += '<p><strong><i>' + data.handle + ': </i></strong>' + data.message + '</p>';
+        });
 
     </script>
 </body>
