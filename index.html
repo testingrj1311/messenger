@@ -4,56 +4,102 @@
     <title>
         Messenger
     </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        .container {
+            max-width: 320px !important;
+        }
+
+        #customer-support {
+            margin-right: 4%;
+            position: relative; 
+        }
+
+        /* .panel-group {
+            margin-top: 90%;
+            position: relative;
+        } */
+
+        .panel-group, .panel, .panel-heading {
+            height: 35px;
+            width: 305px;
+            background-color: rgb(138, 248, 230);
+        }
+
         .heading {
             font-family: 'Comic Sans MS';
             font-style: italic;
-            text-shadow: 1px 2px 2px;
-            text-align: center;
+            text-shadow: 1px 1px 1px;
+            font-size: 20px;
+            padding: 4px;
+            margin: 0px;
+        }        
+
+        .panel-collapse {
+            border: 1px solid rgb(180, 179, 179);
+            padding: 1px;
+            height: 350px;
         }
 
-        .chatbox {
-            background-color: rgb(248, 248, 247);
-            height: 400px;
-            margin: 10px;
-        }
-
-        .handle_box {
-            height: 40px;
-            background-color: white;
-            padding: 5px;
+        .container-fluid {
+            padding: 2px;
+            height: 350px;
         }
 
         .name {
-            padding-top: 5px;
-            padding-bottom: 5px;
+            height: 25px;
+            width: auto;
+            background-color: white;
+            padding: 3px;
+            padding-left: 5px;
+            border: 1px solid rgb(216, 213, 213);
             font-family: 'Times New Roman';
         }
 
-        .chat_box {
-            padding-left: 15px;
-            padding-top: 5px;
-            padding-right: 15px;
-            padding-bottom: 10px;
+        .row {
+            margin: 0px !important;
         }
 
-        #output > * {
+        #output {
             padding:2px;
             margin: 0px;
             width: 50%;
+            height: 252px;
+            background-color: rgb(186, 253, 242);
         }
         
-        .col-3, .col-6 {
-            padding-right: 2px;
-            padding-left: 2px;
+        .col-12 {
+            padding: 2px !important;
+            margin: 1px;
+            margin-left: 0px;
+            width: 100%;
+            /* border: 0px; */
         }
+
+        .col-9, .col-2 {
+            padding: 0px !important;
+            margin: 0px;
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+
         #message, #handle, #submit {
             width: 100%;
+            padding-left: 6px;
+            padding-right: 6px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            height: 30px;
+            margin-top: 2px;
+        }
+
+        #submit {
+            width: 67px;
+            height: 30px;
         }
     </style>
-
-    <!-- <link rel="stylesheet" type="text/css" href="css/layout.css"> -->
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
@@ -72,53 +118,64 @@
 </head>
 
 <body>
-    <div class="jumbotron" style=" background-color: rgb(9, 206, 224); height: 100px; background-size: auto; padding-top: 20px; margin-bottom: 0px;">
-        <h1 class="heading">Chat Messenger</h1>
-    </div>
 
+    <div class="container" id="customer-support">
+        <div class="panel-group" role="tablist">
+            <div class="panel panel-default">
+                <div class="panel-heading border border-bottom-0" data-toggle="collapse" href="#chatbox">
+                    <h1 class="heading">Customer Support Chat Box</h1>
+                </div>
 
-    <div id="send-message" class="chatbox">
-        <div class="container-fluid">
-            <div class="row handle_box border border-bottom-0">
-                <!-- Handle -->
-                <div class="col-12 name">Handle</div>
-            </div>
+                <div class="panel-collapse collapse dropup" id="chatbox">
+                    <div class="container-fluid" style="padding-left: 2px;
+                    padding-right: 2px;">
+                        <div class="row">
+                            <!-- Handle name-->
+                            <div class="col-12 name">Hello! Handle</div>
+                        </div>
 
-            <div class="row chat_box">
-                <div id="col-12 output">
+                        <div class="row">
+                            <div class="col-12" id="output">
 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <input id="handle" class="form-control" placeholder="Handle">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-9">
+                                <input id="message" class="form-control" type="text" placeholder="Type Message here...">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-info" id="submit">SEND</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-9">
-                <div class="form-row">
-                    <div class="col-3">
-                        <input id="handle" class="form-control" placeholder="Handle">
-                    </div>
-                    <div class="col-9">
-                        <input id="message" class="form-control" type="text" placeholder="Type Message here...">
-                    </div>
-                   
-                </div>
 
-            </div>
-            <div class="col-3">
-                <button class="btn btn-info" id="submit">SEND</button>
-            </div>
-        </div>
-    </div>
+
+
 
     <script>
+
         var sockets = io.connect();
 
         var handle = document.getElementById('handle');
         var message = document.getElementById('message');
         var output = document.getElementById('output');
         var btn = document.getElementById('submit');
+
+        // if(handle == ""){
+        //     $('.name').addClass('hide');
+        // } else{
+        //     $('.name').append(handle);
+        // }
 
         btn.onclick = function () {
             sockets.emit('chat', {
