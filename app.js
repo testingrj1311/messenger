@@ -7,7 +7,12 @@ var express = require('express'),
 
 var port = 3000;
 
+server.listen(port,function(){
+    console.log("Listening server at port " + port);
+    
+});
 
+//to recieve events on server side
 io.sockets.on('connection', function(socket){
     console.log("Socket created :" + socket.id)
     socket.on('chat', function(data){
@@ -15,15 +20,17 @@ io.sockets.on('connection', function(socket){
         
     });
 
+    //catching typing msg
+    socket.on('typing',function(data){
+
+        socket.broadcast.emit('typing',data);
+
+    });
 });
 
 app.get("/",function(req,res){
-    console.log("entered app.get");
+    // console.log("entered app.get");
     res.sendFile(__dirname + '/index.html');
 });
 
 
-server.listen(port,function(){
-    console.log("Listening server at port " + port);
-    
-});
