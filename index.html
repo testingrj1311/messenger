@@ -25,7 +25,7 @@
         .panel-group, .panel, .panel-heading {
             height: 35px;
             width: 305px;
-            background-color: rgb(138, 248, 230);
+            background-color: rgb(191, 212, 212);
         }
 
         .heading {
@@ -51,7 +51,7 @@
         .name {
             height: 25px;
             width: auto;
-            background-color: white;
+            background-color: rgb(246, 246, 246);
             padding: 3px;
             padding-left: 5px;
             border: 1px solid rgb(216, 213, 213);
@@ -66,8 +66,33 @@
             padding:2px;
             margin: 0px;
             width: 50%;
-            height: 252px;
-            background-color: rgb(186, 253, 242);
+            height: 230px;
+            background-color: rgb(233, 243, 243);
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        p {
+            margin-bottom: 0px !important;
+            /* overflow: auto; */
+            
+        }
+
+        #typing {
+            padding:2px;
+            margin: 0px;
+            width: 50%;
+            height: 20px;
+            background-color: rgb(233, 243, 243);
+        }
+
+        #typing > span {
+            font-style: italic;
+            font-weight: 500;
+            margin-bottom: 0px;
+            display: inline-block;
+            font-size: small;
+            width: auto;
         }
         
         .col-12 {
@@ -131,13 +156,13 @@
                     padding-right: 2px;">
                         <div class="row">
                             <!-- Handle name-->
-                            <div class="col-12 name">Hello! Handle</div>
+                            <div class="col-12 name">Hello! How can I help You?</div>
                         </div>
 
                         <div class="row">
                             <div class="col-12" id="output">
-
                             </div>
+                            <div class="col-12" id="typing"></div>
                         </div>
 
                         <div class="row">
@@ -159,17 +184,16 @@
     </div>
 
 
-
-
-
     <script>
 
-        var sockets = io.connect();
+        // make connection on client side
+        var sockets = io.connect('http://localhost:3000');
 
         var handle = document.getElementById('handle');
         var message = document.getElementById('message');
         var output = document.getElementById('output');
         var btn = document.getElementById('submit');
+        var typing = document.getElementById('typing');
 
         // if(handle == ""){
         //     $('.name').addClass('hide');
@@ -177,23 +201,52 @@
         //     $('.name').append(handle);
         // }
 
+
+        //functionality of btn
         btn.onclick = function () {
             sockets.emit('chat', {
                 message: message.value,
                 handle: handle.value
             });
 
+            message.value="";
+
         }
 
+        //to braodacast  typing msg
+        message.onkeypress = function () {
+            sockets.emit('typing', handle.value);
+
+        };
+
+        sockets.on('typing', function (data) {
+
+            if (data[0] == data[0].toLowerCase()) {
+                data = data[0].toUpperCase() + data.slice(1);
+            }
+            typing.innerHTML = '<span>' + data + ' is typing a message....</span>';
+
+        });
+        
+        //to output data on screen
         sockets.on('chat', function (data) {
+            typing.innerHTML = '';
+            
             if (data.handle[0] == data.handle[0].toLowerCase()) {
                 data.handle = data.handle[0].toUpperCase() + data.handle.slice(1);
             }
             if (data.message[0] == data.message[0].toLowerCase()) {
                 data.message = data.message[0].toUpperCase() + data.message.slice(1);
             }
+        
             output.innerHTML += '<p><strong><i>' + data.handle + ': </i></strong>' + data.message + '</p>';
+
+            message.value = '';
         });
+
+        
+
+
 
     </script>
 </body>
